@@ -4,6 +4,10 @@ on:
   push:
     branches: [ main ]
 
+env:
+  SONAR_PROJECT_KEY: P-r-a-n-a-v-N-a-i-r_projecthub-angular
+  SONAR_ORG: p-r-a-n-a-v-n-a-i-r
+
 jobs:
   # --- SONARQUBE ANALYSIS ---
   sonarqube:
