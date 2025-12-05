@@ -1,0 +1,122 @@
+<div class="min-h-screen bg-slate-50 grid place-items-center px-4">
+  <div class="w-full max-w-xl rounded-2xl bg-white p-8 shadow-sm ring-1 ring-slate-200">
+    <h1 class="text-2xl font-bold text-slate-900 text-center">ProjectHub</h1>
+    <p class="mt-1 text-center text-slate-500 mb-6">Sign in to manage your projects</p>
+
+    <!-- Tabs -->
+    <div class="mt-5 grid grid-cols-2 rounded-lg bg-slate-100 p-1 gap-1">
+      <button (click)="switch('login')" [class.bg-white]="mode==='login'"
+              class="rounded-md py-2 font-semibold text-slate-800 transition">
+        Login
+      </button>
+      <button (click)="switch('signup')" [class.bg-white]="mode==='signup'"
+              class="rounded-md py-2 font-semibold text-slate-800 transition">
+        Sign Up
+      </button>
+    </div>
+
+    <!-- Login form -->
+    <form *ngIf="mode==='login'" class="mt-6 space-y-4" (ngSubmit)="submitLogin()" [formGroup]="loginForm" novalidate>
+      <div>
+        <label class="mb-1 block text-sm font-medium text-slate-700" for="loginEmail">Email</label>
+        <input id="loginEmail" formControlName="email" type="email"
+               class="w-full rounded-lg border border-slate-300 px-3 py-2 outline-none focus:ring-2 focus:ring-slate-500"
+               placeholder="you@example.com" />
+        <div *ngIf="lf['email'].touched && lf['email'].invalid" class="mt-1 text-xs text-rose-600">Enter a valid email.</div>
+      </div>
+
+      <div>
+        <label class="mb-1 block text-sm font-medium text-slate-700" for="loginPassword">Password</label>
+        <input id="loginPassword" formControlName="password" type="password"
+               class="w-full rounded-lg border border-slate-300 px-3 py-2 outline-none focus:ring-2 focus:ring-slate-500" />
+        <div *ngIf="lf['password'].touched && lf['password'].invalid" class="mt-1 text-xs text-rose-600">
+          Minimum 6 characters.
+        </div>
+      </div>
+
+      <button type="submit" class="btn-brand w-full" [disabled]="submitting">Sign In</button>
+
+      <div class="my-2 text-center text-xs text-slate-400">or</div>
+
+      <div id="googleBtn" class="flex justify-center"></div>
+
+      <div *ngIf="serverError" class="mt-2 text-sm text-rose-600">{{ serverError }}</div>
+    </form>
+
+    <!-- Signup Multi-step -->
+    <div *ngIf="mode === 'signup'" class="mt-6 space-y-4">
+
+      <!-- Step 1: Enter email -->
+      <form *ngIf="!otpSent" [formGroup]="emailForm" (ngSubmit)="submitEmail()" novalidate>
+        <div>
+          <label class="mb-1 block text-sm font-medium text-slate-700" for="signupEmail">Email</label>
+          <input id="signupEmail" formControlName="email" type="email"
+                 class="w-full rounded-lg border border-slate-300 px-3 py-2 outline-none focus:ring-2 focus:ring-slate-500"
+                 placeholder="you@example.com" />
+          <div *ngIf="emailForm.controls['email'].touched && emailForm.controls['email'].invalid"
+               class="mt-1 text-xs text-rose-600">Enter a valid email.</div>
+        </div>
+        <button type="submit" class="mt-3 btn-brand w-full" [disabled]="emailForm.invalid">Send OTP</button>
+        <div class="my-2 text-center text-xs text-slate-400">or</div>
+  
+        <div id="googleBtn" class="flex justify-center"></div>
+      </form>
+
+      <!-- Step 2: Enter OTP -->
+      <form *ngIf="otpSent && !otpVerified" (ngSubmit)="submitOtp()" novalidate class="flex flex-col items-center">
+        <h2 class="text-2xl font-bold text-slate-900 mb-1">Verify</h2>
+        <div class="text-slate-700 mb-6">Your code was sent to you via email</div>
+        <div class="flex gap-4 mb-6">
+          <input maxlength="1" type="text"
+            class="w-12 h-12 rounded-lg border border-slate-300 text-center text-2xl font-semibold focus:outline-none focus:ring-2 focus:ring-blue-400"
+            [(ngModel)]="otpDigits[0]" name="otp0" (input)="onOtpInput(0, $event)" autocomplete="one-time-code" />
+          <input maxlength="1" type="text"
+            class="w-12 h-12 rounded-lg border border-slate-300 text-center text-2xl font-semibold focus:outline-none focus:ring-2 focus:ring-blue-400"
+            [(ngModel)]="otpDigits[1]" name="otp1" (input)="onOtpInput(1, $event)" autocomplete="one-time-code" />
+          <input maxlength="1" type="text"
+            class="w-12 h-12 rounded-lg border border-slate-300 text-center text-2xl font-semibold focus:outline-none focus:ring-2 focus:ring-blue-400"
+            [(ngModel)]="otpDigits[2]" name="otp2" (input)="onOtpInput(2, $event)" autocomplete="one-time-code" />
+          <input maxlength="1" type="text"
+            class="w-12 h-12 rounded-lg border border-slate-300 text-center text-2xl font-semibold focus:outline-none focus:ring-2 focus:ring-blue-400"
+            [(ngModel)]="otpDigits[3]" name="otp3" (input)="onOtpInput(3, $event)" autocomplete="one-time-code" />
+          <input maxlength="1" type="text"
+            class="w-12 h-12 rounded-lg border border-slate-300 text-center text-2xl font-semibold focus:outline-none focus:ring-2 focus:ring-blue-400"
+            [(ngModel)]="otpDigits[4]" name="otp4" (input)="onOtpInput(4, $event)" autocomplete="one-time-code" />
+          <input maxlength="1" type="text"
+            class="w-12 h-12 rounded-lg border border-slate-300 text-center text-2xl font-semibold focus:outline-none focus:ring-2 focus:ring-blue-400"
+            [(ngModel)]="otpDigits[5]" name="otp5" (input)="onOtpInput(5, $event)" autocomplete="one-time-code" />
+        </div>
+        <button type="submit" class="btn-brand w-40 text-lg" [disabled]="otpInvalid">Verify</button>
+        <div *ngIf="otpError" class="mt-4 text-sm text-rose-600">{{ otpError }}</div>
+      </form>
+      
+      
+
+      <!-- Step 3: Enter password and confirm -->
+      <form *ngIf="otpVerified" [formGroup]="passwordForm" (ngSubmit)="submitPassword()" novalidate>
+        <div>
+          <label class="mb-1 block text-sm font-medium text-slate-700" for="password">Password</label>
+          <input id="password" formControlName="password" type="password"
+                 class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 outline-none focus:ring-2 focus:ring-slate-500"
+                 placeholder="Create password" />
+          <div *ngIf="passwordForm.controls['password'].touched && passwordForm.controls['password'].invalid" class="mt-1 text-xs text-rose-600">
+            Password must be at least 7 characters and include uppercase, lowercase, and a number.
+          </div>
+        </div>
+        <div>
+          <label class="mb-1 block text-sm font-medium text-slate-700" for="confirmPassword">Confirm Password</label>
+          <input id="confirmPassword" formControlName="confirmPassword" type="password"
+                 class="w-full rounded-lg border border-slate-300 px-3 py-2 outline-none focus:ring-2 focus:ring-slate-500"
+                 placeholder="Confirm password" />
+          <div *ngIf="passwordForm.hasError('mismatch') && passwordForm.controls['confirmPassword'].touched" class="mt-1 text-xs text-rose-600">
+            Passwords do not match.
+          </div>
+        </div>
+        <button type="submit" class="mt-3 btn-brand w-full" [disabled]="passwordForm.invalid">Sign Up</button>
+        
+      </form>
+
+      <div *ngIf="serverError" class="mt-4 text-center text-sm text-rose-600">{{ serverError }}</div>
+    </div>
+  </div>
+</div>

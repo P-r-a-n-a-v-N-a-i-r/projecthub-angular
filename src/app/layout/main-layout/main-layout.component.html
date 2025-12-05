@@ -1,0 +1,68 @@
+<!-- Top bar (56px tall) -->
+<header class="sticky top-0 z-30 flex items-center gap-2 border-b border-slate-200 bg-white px-4 py-3">
+  <span class="text-2xl font-extrabold tracking-tight text-slate-900">ProjectHub</span>
+  <span class="ml-auto flex items-center gap-2 relative" *ngIf="isAuthed; else signInLink">
+    <!-- Avatar circle -->
+    <div class="w-8 h-8 rounded-full bg-slate-600 flex items-center justify-center text-white font-semibold text-sm select-none relative cursor-default"
+         (mouseenter)="showTooltip = true" (mouseleave)="showTooltip = false">
+      {{ userInitials }}
+      <!-- Tooltip -->
+<div *ngIf="showTooltip"
+class="absolute top-full mt-2 left-1/2 transform-translate-x-1/2 bg-black text-white text-xs rounded px-3 py-1 shadow-lg pointer-events-none z-50">
+<div>{{ userName }}</div>
+<div class="text-gray-300">{{ userEmail }}</div>
+</div>
+
+    </div>
+  
+    <button class="inline-flex items-center rounded-md px-3 h-9 ring-1 ring-slate-200 hover:bg-slate-100"
+            (click)="signOut()" aria-label="Sign Out">
+      Sign Out
+    </button>
+  </span>
+  <ng-template #signInLink>
+    <a routerLink="/auth" class="inline-flex items-center rounded-md px-3 h-9 ring-1 ring-slate-200 hover:bg-slate-100">
+      Sign In
+    </a>
+  </ng-template>
+  
+</header>
+
+  
+  <!-- Laptop-first layout: subtract header (56px) + 2px cushion -->
+  <div class="mx-auto max-w-[1600px] overflow-hidden min-h-[calc(100vh-56px-2px)] lg:grid lg:grid-cols-[260px_1fr]">
+  
+    <!-- Sidebar (lg and up) -->
+    <aside class="hidden lg:block lg:sticky lg:top-[56px] lg:h-[calc(100vh-56px-2px)] lg:w-64 lg:self-start lg:border-r lg:border-slate-200 lg:bg-white lg:p-3">
+      <nav class="space-y-1">
+        <a routerLink="/dashboard" [routerLinkActiveOptions]="{exact:true}" routerLinkActive="bg-slate-100"
+           class="flex items-center gap-3 rounded-md px-3 py-2 text-slate-700 hover:bg-slate-100">
+           <lucide-icon name="house" class="h-5 w-5 text-blue-600"></lucide-icon><span>Dashboard</span>
+        </a>
+        <a routerLink="/projects" routerLinkActive="bg-slate-100"
+           class="flex items-center gap-3 rounded-md px-3 py-2 text-slate-700 hover:bg-slate-100">
+           <lucide-icon name="folder" class="h-5 w-5 text-green-600"></lucide-icon><span>Projects</span>
+        </a>
+        <a routerLink="/activity" routerLinkActive="bg-slate-100"
+           class="flex items-center gap-3 rounded-md px-3 py-2 text-slate-700 hover:bg-slate-100">
+           <lucide-icon name="activity" class="h-5 w-5 text-indigo-600"></lucide-icon><span>Activity</span>
+        </a>
+        <a routerLink="/team" routerLinkActive="bg-slate-100"
+           class="flex items-center gap-3 rounded-md px-3 py-2 text-slate-700 hover:bg-slate-100">
+           <lucide-icon name="users" class="h-5 w-5 text-purple-600"></lucide-icon><span>Team</span>
+        </a>
+        <a routerLink="/settings" routerLinkActive="bg-slate-100"
+           class="flex items-center gap-3 rounded-md px-3 py-2 text-slate-700 hover:bg-slate-100">
+           <lucide-icon name="settings" class="h-5 w-5 text-teal-600"></lucide-icon><span>Settings</span>
+        </a>
+      </nav>
+    </aside>
+  
+    <!-- Content -->
+    <main class="pt-4 pb-8 lg:pl-6">
+      <div class="mx-auto max-w-[1200px] px-4">
+        <router-outlet></router-outlet>
+      </div>
+    </main>
+  </div>
+  

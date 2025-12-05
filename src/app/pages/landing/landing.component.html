@@ -1,0 +1,24 @@
+<!-- Header -->
+<header class="flex justify-between items-center p-6">
+  <span class="text-2xl font-bold text-slate-900">ProjectHub</span>
+  <nav class="space-x-4">
+    <a (click)="onGetStarted()" class="px-4 py-2 rounded-md text-slate-700 hover:text-black transition">Sign In</a>
+    <a routerLink="/auth" [queryParams]="{ mode: 'signup' }"
+       class="px-4 py-2 rounded-md bg-black text-white hover:bg-slate-800 transition"
+    >Sign Up</a>
+  </nav>
+</header>
+
+<!-- Main Hero Section -->
+<main class="flex flex-col items-center justify-center min-h-[70vh]">
+    <p class="text-6xl lg:text-7xl font-extrabold text-slate-900 text-center mb-8 leading-tight">
+        Project Management<br>Application
+      </p>
+      <p class="text-2xl lg:text-3xl text-slate-500 text-center mb-10 font-medium">
+        Manage your projects and tasks efficiently
+      </p>
+  <a (click)="onGetStarted()"
+     class="px-8 py-3 font-semibold rounded-md bg-black text-white text-lg hover:bg-slate-800 transition">
+    Get Started
+  </a>
+</main>

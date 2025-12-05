@@ -1,0 +1,54 @@
+/* Tailwind v3 setup */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  /* Primary brand button (slate) */
+  .btn-brand {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg bg-slate-800 px-5 py-2.5
+           font-semibold text-white shadow hover:bg-slate-900 transition
+           focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500
+           disabled:opacity-60 disabled:cursor-not-allowed;
+  }
+
+  /* Outline brand button (slate) */
+  .btn-brand-outline {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg border border-slate-800 bg-white
+           px-4 py-2 font-semibold text-slate-900 hover:bg-slate-50 transition
+           focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500
+           disabled:opacity-60 disabled:cursor-not-allowed;
+  }
+}
+
+#app-root, app-root { display:block; height: 100%; }
+
+/* Your custom globals */
+html, body { height: 100%; }
+body { margin: 0; overflow-y: hidden; font-family: Inter, Roboto, 'Helvetica Neue', Arial, sans-serif; background:#f5f7fb; }
+
+.app-shell { display: flex; height: 100vh; }
+.content { padding: 24px; }
+.toolbar-title { font-weight: 700; }
+
+.stat { display:flex; flex-direction:column; gap:6px; padding:16px; border-radius:12px; background:#fff; }
+.stat h2 { margin:0; font-size:28px; }
+.stat small { color:#6b7280; }
+
+.card { background:#fff; border-radius:12px; padding:16px; }
+
+.progress {
+    height: 6px;
+    background: #e5e7eb;
+    border-radius: 999px;
+    overflow: hidden;
+  }
+  
+  .progress > span {
+    display: block;
+    height: 100%;
+    background: #3b82f6;
+    width: 0;
+    transition: width 0.3s;
+  }
+  

@@ -1,0 +1,380 @@
+<!-- Tabbed Navigation & Progress Bar -->
+<div>
+  <h1 class="text-xl font-semibold text-slate-900">{{project.name}}</h1>
+</div>
+<div class="flex flex-wrap items-center justify-between gap-4 mb-8 mt-2">
+  <div class="flex items-center gap-2">
+    <button
+      class="px-4 py-1 bg-white border border-slate-200 rounded-lg text-slate-500 font-semibold shadow-sm focus:outline-none focus:ring-2 focus:ring-slate-300 focus:text-slate-900"
+      [ngClass]="{ 'bg-slate-100': activeTab === 'tasks' }" (click)="activeTab = 'tasks'">Tasks</button>
+    <button
+      class="px-4 py-1 bg-white border border-slate-200 rounded-lg text-slate-500 font-semibold shadow-sm focus:outline-none focus:ring-2 focus:ring-slate-300 focus:text-slate-900"
+      [ngClass]="{ 'bg-slate-100': activeTab === 'team' }" (click)="activeTab = 'team'">Team Members</button>
+  </div>
+  <div class="flex-1 flex items-center justify-end gap-3 mr-4">
+    <span class="text-slate-500 text-sm">{{ completionPercentage }}% complete</span>
+    <div class="w-64 bg-slate-100 h-3 rounded-full overflow-hidden">
+      <div class="bg-slate-600 h-3" [style.width.%]="completionPercentage"></div>
+    </div>
+  </div>
+  <div class="flex gap-2">
+    <button
+      class="bg-slate-700 hover:bg-slate-800 text-white font-semibold px-6 py-2.5 rounded-lg flex items-center gap-2 shadow-none"
+      (click)="showCreateTask = true">
+      <lucide-icon name="plus" class="h-5 w-5"></lucide-icon>
+      Add Task
+    </button>
+    <button *ngIf="project?.owner === currentUserId"
+      class="bg-white border border-slate-200 rounded-lg p-2 text-slate-400 hover:bg-slate-100"
+      (click)="showSettingsModal = true">
+      <lucide-icon name="settings" class="h-5 w-5"></lucide-icon>
+    </button>
+
+  </div>
+</div>
+
+<!--setting Dialogue Box-->
+<div *ngIf="showSettingsModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+  <div class="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-lg relative">
+    <button (click)="showSettingsModal = false"
+      class="absolute top-4 right-4 text-2xl text-slate-400 hover:text-slate-800 transition">&times;</button>
+
+    <h2 class="text-2xl font-bold mb-4 text-slate-900">Project Settings</h2>
+
+    <form (ngSubmit)="saveProjectSettings()">
+      <div class="mb-4 space-y-4">
+        <div>
+          <label class="block mb-1 font-semibold text-slate-600">Name:</label>
+          <input [(ngModel)]="project.name" name="name" required class="w-full border rounded px-3 py-2" />
+        </div>
+        <div>
+          <label class="block mb-1 font-semibold text-slate-600">Status:</label>
+          <select [(ngModel)]="project.status" name="status" required
+            class="w-full border rounded px-3 py-2 text-base focus:outline-none focus:ring-2 focus:ring-slate-300 focus:border-slate-600">
+            <option value="Planning">Planning</option>
+            <option value="In Progress">In Progress</option>
+            <option value="On Hold">On Hold</option>
+            <option value="Completed">Completed</option>
+            <option value="Cancelled">Cancelled</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block mb-1 font-semibold text-slate-600">Start Date:</label>
+          <input type="date" [(ngModel)]="project.startDate" name="startDate" class="w-full border rounded px-3 py-2" />
+        </div>
+        <div>
+          <label class="block mb-1 font-semibold text-slate-600">End Date:</label>
+          <input type="date" [(ngModel)]="project.endDate" name="endDate" class="w-full border rounded px-3 py-2" />
+        </div>
+        <div>
+          <label class="block mb-1 font-semibold text-slate-600">Description:</label>
+          <textarea [(ngModel)]="project.description" name="description" class="w-full border rounded px-3 py-2"
+            rows="3"></textarea>
+        </div>
+      </div>
+
+      <div class="flex justify-end gap-4 mt-6">
+        <button class="bg-slate-600 text-white px-5 py-2 rounded-lg hover:bg-slate-700" type="submit">Save</button>
+        <button class="bg-red-600 text-white px-5 py-2 rounded-lg hover:bg-red-700" type="button"
+          (click)="openDeleteProjectConfirm()">
+          Delete Project
+        </button>
+      </div>
+
+    </form>
+  </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div *ngIf="showDeleteProjectConfirm"
+  class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+  <div class="bg-white rounded-lg shadow-lg max-w-md w-full p-6">
+    <h3 class="text-lg font-semibold mb-4">Confirm Delete</h3>
+    <p class="mb-6">Are you sure you want to delete this project? This action cannot be undone.</p>
+    <div class="flex justify-end gap-4">
+      <button (click)="cancelDeleteProject()" class="px-4 py-2 rounded bg-gray-300 hover:bg-gray-400">Cancel</button>
+      <button (click)="confirmDeleteProject()"
+        class="px-4 py-2 rounded bg-red-600 text-white hover:bg-red-700">Delete</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- Create Task Modal -->
+<div *ngIf="showCreateTask" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+  <div class="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-lg relative">
+    <button (click)="showCreateTask = false"
+      class="absolute top-4 right-4 text-2xl text-slate-400 hover:text-slate-800 transition">&times;</button>
+    <h2 class="text-2xl font-bold text-slate-900 mb-1">Create a new task</h2>
+    <div class="mb-6 text-slate-500">Fill in the details below to add a new task to the project.</div>
+    <form (ngSubmit)="addTask()" autocomplete="off">
+      <div class="mb-4">
+        <label class="block mb-1 font-semibold text-slate-700">Title</label>
+        <input [(ngModel)]="taskTitle" name="title" required
+          class="w-full rounded-lg border-2 border-slate-200 focus:border-slate-600 px-4 py-2 text-base focus:outline-none focus:ring-2 focus:ring-slate-300"
+          placeholder="E.g. Design new landing page">
+      </div>
+      <div class="mb-4">
+        <label class="block mb-1 font-semibold text-slate-700">Description</label>
+        <textarea [(ngModel)]="taskDescription" name="description"
+          class="w-full rounded-lg border-2 border-slate-200 focus:border-slate-600 px-4 py-2 text-base focus:outline-none focus:ring-2 focus:ring-slate-300"
+          rows="2" placeholder="A short description of the task"></textarea>
+      </div>
+      <div class="mb-4">
+        <label class="block mb-1 font-semibold text-slate-700">Status</label>
+        <select [(ngModel)]="taskStatus" name="status"
+          class="w-full rounded-lg border-2 border-slate-200 focus:border-slate-600 px-4 py-2 text-base focus:outline-none focus:ring-2 focus:ring-slate-300">
+          <option value="todo">To Do</option>
+          <option value="in progress">In Progress</option>
+          <option value="done">Completed</option>
+        </select>
+      </div>
+      <div class="mb-4">
+        <label class="block mb-1 font-semibold text-slate-700">Priority</label>
+        <select [(ngModel)]="taskPriority" name="priority"
+          class="w-full rounded-lg border-2 border-slate-200 focus:border-slate-600 px-4 py-2 text-base focus:outline-none focus:ring-2 focus:ring-slate-300">
+          <option value="low">Low</option>
+          <option value="medium">Medium</option>
+          <option value="high">High</option>
+          <option value="critical">Critical</option>
+        </select>
+      </div>
+      <div class="mb-4">
+        <label class="block mb-1 font-semibold text-slate-700">Deadline</label>
+        <input type="date" [(ngModel)]="taskDeadline" name="deadline"
+          (change)="onAssigneeOrDeadlineChange()"
+          class="w-full rounded-lg border-2 border-slate-200 focus:border-slate-600 px-4 py-2 text-base focus:outline-none focus:ring-2 focus:ring-slate-300 pr-10">
+      </div>
+      <div class="mb-6">
+        <label class="block mb-1 font-semibold text-slate-700">Assignee</label>
+        <select [(ngModel)]="taskAssignee" name="assignee"
+          (change)="onAssigneeOrDeadlineChange()"
+          class="w-full rounded-lg border-2 border-slate-200 focus:border-slate-600 px-4 py-2 text-base focus:outline-none focus:ring-2 focus:ring-slate-300">
+          <option value="">Select assignee...</option>
+          <option *ngFor="let member of project?.members" [value]="member">
+            {{ getUserById(member)?.name || member }}
+          </option>
+        </select>
+      </div>
+      <div *ngIf="conflictWarning" class="mb-4 text-amber-600 text-sm font-semibold">
+        {{ conflictWarning }}
+      </div>
+      
+      <div class="flex justify-end gap-3">
+        <button type="button" class="bg-slate-100 text-slate-700 font-semibold px-5 py-2 rounded-lg"
+          (click)="showCreateTask=false">Cancel</button>
+        <button type="submit" [disabled]="adding"
+          class="bg-slate-700 hover:bg-slate-800 text-white font-semibold px-6 py-2 rounded-lg">
+          {{ adding ? 'Creating...' : 'Create Task' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Kanban Board Columns -->
+<div *ngIf="activeTab === 'tasks'" class="flex gap-6 lg:gap-8">
+  <!-- To Do Column -->
+  <div class="flex-1 bg-slate-50 min-h-[380px] rounded-2xl flex flex-col p-6">
+    <div class="font-bold text-xl text-slate-900 mb-6 flex items-center justify-between">
+      To Do
+      <span
+        class="rounded-full bg-slate-100 px-3 py-1 text-base font-semibold text-slate-700">{{ todoTasks.length }}</span>
+    </div>
+    <div *ngIf="todoTasks.length; else noTodo" class="flex flex-col gap-4">
+      <div *ngFor="let t of todoTasks" (click)="openTaskModal(t)"
+        class="bg-white border rounded-lg px-4 py-3 flex items-center justify-between cursor-pointer hover:shadow transition">
+        <span class="font-medium text-slate-900">{{ t.title }}</span>
+        <span [ngClass]="getPriorityClass(t.priority)" class="text-xs px-3 py-1 rounded-lg">{{ t.priority }}</span>
+      </div>
+    </div>
+    <ng-template #noTodo>
+      <div class="flex-1 flex items-center justify-center text-slate-400 text-base font-medium">
+        No tasks in this column.
+      </div>
+    </ng-template>
+  </div>
+  <!-- In Progress Column -->
+  <div class="flex-1 bg-slate-50 min-h-[380px] rounded-2xl flex flex-col p-6">
+    <div class="font-bold text-xl text-slate-900 mb-6 flex items-center justify-between">
+      In Progress
+      <span
+        class="rounded-full bg-slate-100 px-3 py-1 text-base font-semibold text-slate-700">{{ inProgressTasks.length }}</span>
+    </div>
+    <div *ngIf="inProgressTasks.length; else noInProgress" class="flex flex-col gap-4">
+      <div *ngFor="let t of inProgressTasks" (click)="openTaskModal(t)"
+        class="bg-white border rounded-lg px-4 py-3 flex items-center justify-between cursor-pointer hover:shadow transition">
+        <span class="font-medium text-slate-900">{{ t.title }}</span>
+        <span [ngClass]="getPriorityClass(t.priority)" class="text-xs px-3 py-1 rounded-lg">{{ t.priority }}</span>
+      </div>
+    </div>
+    <ng-template #noInProgress>
+      <div class="flex-1 flex items-center justify-center text-slate-400 text-base font-medium">
+        No tasks in this column.
+      </div>
+    </ng-template>
+  </div>
+  <!-- Done Column -->
+  <div class="flex-1 bg-slate-50 min-h-[380px] rounded-2xl flex flex-col p-6">
+    <div class="font-bold text-xl text-slate-900 mb-6 flex items-center justify-between">
+      Completed
+      <span
+        class="rounded-full bg-slate-100 px-3 py-1 text-base font-semibold text-slate-700">{{ doneTasks.length }}</span>
+    </div>
+    <div *ngIf="doneTasks.length; else noDone" class="flex flex-col gap-4">
+      <div *ngFor="let t of doneTasks" (click)="openTaskModal(t)"
+        class="bg-white border rounded-lg px-4 py-3 flex items-center justify-between cursor-pointer hover:shadow transition">
+        <span class="font-medium text-slate-900">{{ t.title }}</span>
+        <span [ngClass]="getPriorityClass(t.priority)" class="text-xs px-3 py-1 rounded-lg">{{ t.priority }}</span>
+      </div>
+    </div>
+    <ng-template #noDone>
+      <div class="flex-1 flex items-center justify-center text-slate-400 text-base font-medium">
+        No tasks in this column.
+      </div>
+    </ng-template>
+  </div>
+</div>
+
+<!-- Task Detail Modal -->
+<div *ngIf="showTaskModal && selectedTask"
+  class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+  <div class="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-lg relative flex flex-col gap-3">
+    <button (click)="showTaskModal = false"
+      class="absolute top-4 right-4 text-2xl text-slate-400 hover:text-slate-800 transition">&times;</button>
+    <div class="flex gap-3 items-center mb-2">
+      <h2 class="text-2xl font-bold text-slate-900 flex-1 break-words">{{ selectedTask.title }}</h2>
+      <span [ngClass]="getPriorityClass(selectedTask.priority)" class="text-xs px-3 py-1 rounded-lg">
+        {{ selectedTask.priority }}
+      </span>
+    </div>
+    <div *ngIf="selectedTask.description" class="text-slate-600 mb-3" style="white-space: pre-line;">
+      {{ selectedTask.description }}</div>
+    <div class="flex flex-wrap gap-4 items-center mb-2">
+      <div>
+        <span class="font-semibold text-slate-700">Status:</span>
+        <span
+          class="inline-block px-2 py-1 rounded text-xs bg-slate-100 font-medium ml-1">{{ selectedTask.status }}</span>
+      </div>
+      <div *ngIf="selectedTask.dueDate">
+        <span class="font-semibold text-slate-700">Due:</span>
+        <span class="ml-1 text-xs">{{ selectedTask.dueDate | date:'mediumDate' }}</span>
+      </div>
+      <div *ngIf="selectedTask.assignedTo">
+        <span class="font-semibold text-slate-700">Assignee:</span>
+        <span class="ml-1">{{ getAssigneeName(selectedTask.assignedTo) }}</span>
+      </div>
+    </div>
+    <!-- Status change buttons -->
+    <div class="flex flex-wrap gap-2 mb-6">
+      <span class="font-semibold text-slate-700 mr-2">Move to:</span>
+      <button *ngIf="selectedTask.status !== 'todo'"
+        class="text-xs px-4 py-1 rounded-lg border border-slate-200 bg-slate-50 hover:bg-slate-200 font-medium"
+        (click)="changeTaskStatus('todo')">To Do</button>
+      <button *ngIf="selectedTask.status !== 'in progress'"
+        class="text-xs px-4 py-1 rounded-lg border border-yellow-200 bg-yellow-50 hover:bg-yellow-100 font-medium"
+        (click)="changeTaskStatus('in progress')">In Progress</button>
+      <button *ngIf="selectedTask.status !== 'done'"
+        class="text-xs px-4 py-1 rounded-lg border border-green-200 bg-green-50 hover:bg-green-100 font-medium"
+        (click)="changeTaskStatus('done')">Completed</button>
+    </div>
+
+    <div class="flex justify-end pt-3 gap-3 border-t border-slate-100 mt-2">
+      <button class="bg-slate-200 text-slate-600 font-semibold px-5 py-2 rounded-lg hover:bg-slate-300"
+        (click)="showTaskModal = false">Close</button>
+      <button class="bg-red-100 text-red-600 px-6 py-2 rounded-lg font-bold hover:bg-red-200"
+        (click)="deleteTask()">Delete</button>
+    </div>
+  </div>
+</div>
+
+
+<div *ngIf="activeTab === 'team'" class="min-h-[350px] p-6 bg-white rounded-xl shadow-sm flex flex-col">
+  <div class="flex justify-between items-center mb-4">
+    <h2 class="text-xl font-semibold">Team Members</h2>
+    <button (click)="showAddMemberModal = true" class="btn-brand px-4 py-2 text-sm">
+      <lucide-icon name="user-plus" class="h-5 w-5 mr-1"></lucide-icon>
+      Add Member
+    </button>
+  </div>
+
+  <table class="w-full border-collapse border border-slate-200">
+    <thead>
+      <tr class="bg-slate-100 text-left">
+        <th class="p-3 border border-slate-200">#</th>
+        <th class="p-3 border border-slate-200">Name</th>
+        <th class="p-3 border border-slate-200">Email</th>
+        <ng-container *ngIf="project?.owner === currentUserId">
+          <th class="p-3 border border-slate-200">Actions</th>
+        </ng-container>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let member of project?.members; let i = index" class="hover:bg-slate-50 cursor-pointer">
+        <td class="p-3 border border-slate-200">{{ i + 1 }}</td>
+        <td class="p-3 border border-slate-200">{{ getUserById(member)?.name || member }}</td>
+        <td class="p-3 border border-slate-200">{{ getUserById(member)?.email || '-' }}</td>
+        <ng-container *ngIf="project?.owner === currentUserId">
+          <td class="p-3 border border-slate-200">
+            <button *ngIf="member !== currentUserId" (click)="openDeleteMemberModal(member)"
+              class="text-red-600 hover:underline">
+              Delete
+            </button>
+          </td>
+        </ng-container>
+      </tr>
+      <tr *ngIf="!project?.members?.length">
+        <td class="p-3 border border-slate-200 text-center" colspan="4">No members in project.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div *ngIf="showDeleteMemberModal" class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+    <div class="bg-white p-6 rounded-lg max-w-sm w-full shadow">
+      <h3 class="text-lg font-semibold mb-4">Confirm Remove Member</h3>
+      <p class="mb-6">Are you sure you want to remove this member from the project?</p>
+      <div class="flex justify-end gap-4">
+        <button (click)="cancelDeleteMember()" class="px-4 py-2 rounded bg-gray-300 hover:bg-gray-400">
+          Cancel
+        </button>
+        <button (click)="confirmDeleteMember()" class="px-4 py-2 rounded bg-red-600 text-white hover:bg-red-700">
+          Remove
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div *ngIf="showAddMemberModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-30">
+  <div class="bg-white rounded-2xl p-8 w-full max-w-md relative">
+    <button (click)="showAddMemberModal = false"
+      class="absolute top-4 right-4 text-2xl text-slate-400 hover:text-slate-900">&times;</button>
+    <h3 class="text-lg font-semibold mb-4">Add Member</h3>
+
+    <select [(ngModel)]="newMemberId"
+      class="block w-full rounded-md border border-slate-300 bg-white px-4 py-2 text-sm text-slate-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-300 focus:outline-none shadow-sm transition">
+      <option value="" disabled>Select user</option>
+      <option *ngFor="let user of users" [value]="user._id">
+        {{ user.name }} ({{ user.email }})
+      </option>
+    </select>
+
+    <div class="py-3 flex justify-end gap-3">
+      <button type="button" class="bg-slate-100 px-5 py-2 rounded-lg"
+        (click)="showAddMemberModal = false">Cancel</button>
+      <button type="button" class="bg-slate-700 text-white px-6 py-2 rounded-lg"
+        [disabled]="!newMemberId || addingMember" (click)="addMember()">
+        {{ addingMember ? 'Adding...' : 'Add Member' }}
+      </button>
+    </div>
+
+    <div *ngIf="memberError" class="mt-2 text-red-600 text-sm">{{ memberError }}</div>
+  </div>
+</div>
+
+<div *ngIf="showToast" [ngClass]="{'bg-green-500': toastType==='success', 'bg-red-500': toastType==='error'}"
+  class="fixed bottom-5 right-5 px-6 py-3 text-white rounded-lg shadow-lg">
+  {{ toastMessage }}
+</div>
