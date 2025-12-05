@@ -8,7 +8,7 @@ RUN npm ci
 
 # Copy source and build (uses "build": "ng build")
 COPY . .
-RUN npm run build:prod
+RUN npm run build
 
 # Stage 2: Serve with Nginx
 FROM nginx:alpine
