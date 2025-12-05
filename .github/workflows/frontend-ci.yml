@@ -4,10 +4,6 @@ on:
   push:
     branches: [ main ]
 
-env:
-  SONAR_PROJECT_KEY: P-r-a-n-a-v-N-a-i-r_projecthub-angular
-  SONAR_ORG: p-r-a-n-a-v-n-a-i-r
-
 jobs:
   # --- SONARQUBE ANALYSIS ---
   sonarqube:
@@ -17,11 +13,6 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
-      - name: Use Node 20
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
 
       - name: SonarQube Scan
         uses: SonarSource/sonarqube-scan-action@v6
@@ -80,5 +71,8 @@ jobs:
             docker pull $FRONTEND_IMAGE:latest &&
             docker ps -q --filter 'name=projecthub-frontend' | xargs -r docker stop &&
             docker ps -aq --filter 'name=projecthub-frontend' | xargs -r docker rm &&
-            docker run -d --name projecthub-frontend -p 8080:80 $FRONTEND_IMAGE:latest
+            docker run -d --name projecthub-frontend \
+              --link projecthub-backend \
+              -p 8080:80 \
+              $FRONTEND_IMAGE:latest
           "
