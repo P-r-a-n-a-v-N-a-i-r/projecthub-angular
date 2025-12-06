@@ -40,7 +40,7 @@ export class DashboardComponent implements OnInit {
   ngOnInit(): void {
     console.log('Token on dashboard init:', localStorage.getItem('ph_token'));
 
-    this.http.get<Stats>(`${this.baseUrl}/api/metrics`).subscribe(m => {
+    this.http.get<Stats>(`${this.baseUrl}/metrics`).subscribe(m => {
       this.stats = {
         totalProjects: m?.totalProjects ?? 0,
         activeProjects: m?.activeProjects ?? 0,
