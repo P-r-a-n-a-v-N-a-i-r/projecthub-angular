@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../environments/environment';
 
 interface ProjectCompletion {
   _id: string;
@@ -34,10 +35,12 @@ export class DashboardComponent implements OnInit {
 
   constructor(private http: HttpClient) {}
 
+  private baseUrl = `${environment.apiBase}`;
+
   ngOnInit(): void {
     console.log('Token on dashboard init:', localStorage.getItem('ph_token'));
 
-    this.http.get<Stats>('http://localhost:5000/api/metrics').subscribe(m => {
+    this.http.get<Stats>(`${this.baseUrl}/api/metrics`).subscribe(m => {
       this.stats = {
         totalProjects: m?.totalProjects ?? 0,
         activeProjects: m?.activeProjects ?? 0,
