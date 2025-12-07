@@ -110,7 +110,6 @@ jobs:
       contents: read
       actions: read
       id-token: write
-      artifacts: write
     steps:
       - name: OWASP ZAP Full Scan
         uses: zaproxy/action-full-scan@v0.7.0
