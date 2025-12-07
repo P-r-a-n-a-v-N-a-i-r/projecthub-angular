@@ -25,6 +25,12 @@ jobs:
       - name: Run Angular unit tests with coverage
         run: npm run test:coverage
 
+      - name: List coverage folder (debug)
+        run: |
+          ls -R
+          echo "---- coverage ----"
+          ls -R coverage || echo "no coverage dir"
+
       - name: SonarQube Scan
         uses: SonarSource/sonarqube-scan-action@v6
         env:
