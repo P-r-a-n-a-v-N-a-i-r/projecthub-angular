@@ -19,6 +19,12 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Install npm dependencies
+        run: npm ci
+
+      - name: Run Angular unit tests with coverage
+        run: npm run test:coverage
+
       - name: SonarQube Scan
         uses: SonarSource/sonarqube-scan-action@v6
         env:
