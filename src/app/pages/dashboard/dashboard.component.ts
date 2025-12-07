@@ -35,7 +35,7 @@ export class DashboardComponent implements OnInit {
 
   constructor(private http: HttpClient) {}
 
-  private baseUrl = `${environment.apiBase}`;
+  private readonly baseUrl = `${environment.apiBase}`;
 
   ngOnInit(): void {
     console.log('Token on dashboard init:', localStorage.getItem('ph_token'));

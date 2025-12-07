@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class SettingsService {
-  private base = `${environment.apiBase}/users`;
+  private readonly base = `${environment.apiBase}/users`;
 
   constructor(private http: HttpClient) {}
 

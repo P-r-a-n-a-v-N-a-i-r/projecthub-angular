@@ -38,8 +38,8 @@ export interface VerifyOtpDto {
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private base = `${environment.apiBase}/auth`;
-  private tokenKey = 'ph_token';
+  private readonly base = `${environment.apiBase}/auth`;
+  private readonly tokenKey = 'ph_token';
 
   currentUser$ = new BehaviorSubject<User | null>(null);
 

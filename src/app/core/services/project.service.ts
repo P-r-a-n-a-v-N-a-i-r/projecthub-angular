@@ -47,8 +47,8 @@ export interface Task {
 
 @Injectable({ providedIn: 'root' })
 export class ProjectService {
-  private base = `${environment.apiBase}/projects`;
-  private taskBase = `${environment.apiBase}/tasks`;
+  private readonly base = `${environment.apiBase}/projects`;
+  private readonly taskBase = `${environment.apiBase}/tasks`;
 
   constructor(private http: HttpClient) {}
 

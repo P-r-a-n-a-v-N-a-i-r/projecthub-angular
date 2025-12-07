@@ -18,7 +18,7 @@ export interface Activity {
 @Injectable({ providedIn: 'root' })
 export class ActivityService {
 
-  private base = `${environment.apiBase}/activity`; 
+  private readonly base = `${environment.apiBase}/activity`; 
 
   constructor(private http: HttpClient) {}
   
