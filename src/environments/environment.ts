@@ -1,6 +1,6 @@
 export const environment = {
     production: true,
-    apiBase: 'http://localhost:5000/api', 
+    apiBase: '/api', 
     googleClientId: '500686527541-evjcgeici0n6o977mt6o3dhi77k8g64h.apps.googleusercontent.com'
   };
   
