@@ -111,26 +111,39 @@ jobs:
     runs-on: ubuntu-latest
     needs: deploy-ec2
     if: always()
-    timeout-minutes: 10  # Reduced for reliability
-    continue-on-error: true  # Pipeline NEVER fails
+    timeout-minutes: 20
+    continue-on-error: true
     steps:
+      - name: Prepare workspace files & permissions
+        run: |
+          touch report_json.json report_md.md report_html.html zap-report.html
+          chmod a+w report_json.json report_md.md report_html.html zap-report.html
+
       - name: OWASP ZAP Full Scan
-        timeout-minutes: 8
         uses: zaproxy/action-full-scan@v0.7.0
         with:
           target: 'http://52.4.214.64:8080'
           cmd_options: '-z -r zap-report.html'
+        timeout-minutes: 12
+        continue-on-error: true
 
-      - name: Display ZAP Results Summary
+      - name: Show a short summary (logs)
         if: always()
         run: |
-          echo "=================================="
-          echo "✅ ZAP SCAN RESULTS SUMMARY"
-          echo "=================================="
+          echo "===== ZAP quick summary (top lines of zap-report.html if present) ====="
           if [ -f zap-report.html ]; then
-            echo "✅ ZAP Report generated: $(ls -la zap-report.html)"
+            sed -n '1,120p' zap-report.html || true
           else
-            echo "⚠️  ZAP report not generated (timeout/network OK)"
+            echo "No zap-report.html found"
           fi
-          echo "📊 PREVIOUS SCAN: PASS: 136 | WARN: 4 | FAIL: 0"
-          echo "=================================="
+
+      - name: Upload ZAP report artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: zap-report
+          path: |
+            zap-report.html
+            report_json.json
+            report_md.md
+            report_html.html
