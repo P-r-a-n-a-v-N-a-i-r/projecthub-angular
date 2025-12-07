@@ -25,7 +25,7 @@ projectStats: { [projectId: string]: { total: number; done: number } } = {};
   constructor(
     private authService: AuthService,
     private projectsApi: ProjectService,
-    private usersService: UsersService,  // import UsersService
+    private usersService: UsersService, 
     private router: Router
   ) {}
 
