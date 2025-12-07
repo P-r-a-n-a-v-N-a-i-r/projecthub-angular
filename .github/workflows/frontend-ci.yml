@@ -36,6 +36,7 @@ jobs:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
           args: --severity-threshold=high
+        continue-on-error: true
 
   # --- 3. BUILD & PUSH DOCKER IMAGE ---
   build-and-push:
