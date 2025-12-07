@@ -33,7 +33,7 @@ export class DashboardComponent implements OnInit {
     completionRate: 0,
   };
 
-  constructor(private http: HttpClient) {}
+  constructor(private readonly http: HttpClient) {}
 
   private readonly baseUrl = `${environment.apiBase}`;
 

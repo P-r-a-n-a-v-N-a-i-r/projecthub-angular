@@ -39,10 +39,10 @@ export class SettingsComponent implements OnInit {
   ownedProjects: Project[] = []; // to hold projects owned by current user
 
   constructor(
-    private fb: FormBuilder,
-    private auth: AuthService,
-    private settings: SettingsService,
-    private projectsService: ProjectService
+    private readonly fb: FormBuilder,
+    private readonly auth: AuthService,
+    private readonly settings: SettingsService,
+    private readonly projectsService: ProjectService
   ) { }
 
   ngOnInit() {

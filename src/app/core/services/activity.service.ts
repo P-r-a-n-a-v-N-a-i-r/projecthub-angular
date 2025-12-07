@@ -20,7 +20,7 @@ export class ActivityService {
 
   private readonly base = `${environment.apiBase}/activity`; 
 
-  constructor(private http: HttpClient) {}
+  constructor(private readonly http: HttpClient) {}
   
   getAll(): Observable<Activity[]> {
     return this.http.get<Activity[]>(this.base);

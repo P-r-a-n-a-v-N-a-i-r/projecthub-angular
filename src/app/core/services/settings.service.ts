@@ -8,7 +8,7 @@ import { Observable } from 'rxjs';
 export class SettingsService {
   private readonly base = `${environment.apiBase}/users`;
 
-  constructor(private http: HttpClient) {}
+  constructor(private readonly http: HttpClient) {}
 
   updateProfile(data: { name: string; email: string }): Observable<User> {
     return this.http.put<User>(`${this.base}/me`, data);

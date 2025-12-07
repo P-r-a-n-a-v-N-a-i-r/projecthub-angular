@@ -15,7 +15,7 @@ export interface User {
 export class UsersService {
   private readonly baseUrl = `${environment.apiBase}/users`;
 
-  constructor(private http: HttpClient) {}
+  constructor(private readonly http: HttpClient) {}
 
   listUsers(): Observable<User[]> {
     return this.http.get<User[]>(`${this.baseUrl}/allUsers`);

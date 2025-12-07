@@ -70,11 +70,11 @@ export class TaskComponent implements OnInit {
   conflictWarning: string = '';
 
   constructor(
-    private route: ActivatedRoute,
-    private router: Router,
-    private projectService: ProjectService,
-    private usersService: UsersService,
-    private authService: AuthService
+    private readonly route: ActivatedRoute,
+    private readonly router: Router,
+    private readonly projectService: ProjectService,
+    private readonly usersService: UsersService,
+    private readonly authService: AuthService
   ) { }
 
   ngOnInit() {

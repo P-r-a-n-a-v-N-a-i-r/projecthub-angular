@@ -50,7 +50,7 @@ export class ProjectService {
   private readonly base = `${environment.apiBase}/projects`;
   private readonly taskBase = `${environment.apiBase}/tasks`;
 
-  constructor(private http: HttpClient) {}
+  constructor(private readonly http: HttpClient) {}
 
   listProjects(): Observable<Project[]> {
     return this.http.get<Project[]>(this.base);

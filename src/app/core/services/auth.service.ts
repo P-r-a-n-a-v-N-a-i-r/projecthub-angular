@@ -43,7 +43,7 @@ export class AuthService {
 
   currentUser$ = new BehaviorSubject<User | null>(null);
 
-  constructor(private http: HttpClient) {}
+  constructor(private readonly http: HttpClient) {}
 
   login(body: LoginDto): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.base}/login`, body).pipe(

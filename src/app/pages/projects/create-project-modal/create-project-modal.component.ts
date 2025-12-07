@@ -30,10 +30,10 @@ export class CreateProjectModalComponent implements OnInit {
   currentUserId: string = ''; // ID of the current logged-in user
 
   constructor(
-    private fb: FormBuilder,
-    private projects: ProjectService,
-    private usersService: UsersService,
-    private authService: AuthService
+    private readonly fb: FormBuilder,
+    private readonly projects: ProjectService,
+    private readonly usersService: UsersService,
+    private readonly authService: AuthService
   ) {}
 
   ngOnInit(): void {
