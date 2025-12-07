@@ -4,6 +4,11 @@ on:
   push:
     branches: [ main ]
 
+permissions:
+  contents: write
+  actions: read
+  packages: write
+
 jobs:
   # --- 1. SONARQUBE SAST (Code Quality + Bugs) ---
   sonarqube:
