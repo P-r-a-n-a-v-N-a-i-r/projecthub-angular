@@ -19,7 +19,7 @@ module.exports = function (config) {
     singleRun: true,
     reporters: ['progress', 'kjhtml'],
     coverageReporter: {
-      dir: require('path').join(__dirname, './coverage/projecthub'),
+      dir: require('path').join(__dirname, './coverage/projecthub-angular'),
       reporters: [{ type: 'lcov' }, { type: 'text-summary' }]
     }
   });
