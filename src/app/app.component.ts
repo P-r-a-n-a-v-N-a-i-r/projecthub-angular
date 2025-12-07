@@ -7,6 +7,7 @@ import { AuthService } from './core/services/auth.service';
   templateUrl: './app.component.html'
 })
 export class AppComponent {
+  title = 'projecthub'; 
   constructor(private auth: AuthService, private router: Router) {}
 
   get isAuthed(): boolean {

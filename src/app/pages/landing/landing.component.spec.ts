@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { LandingComponent } from './landing.component';
+import { AuthService } from '../../core/services/auth.service';  // Adjust path as needed
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 
 describe('LandingComponent', () => {
   let component: LandingComponent;
@@ -8,7 +10,16 @@ describe('LandingComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [LandingComponent]
+      imports: [HttpClientTestingModule],
+      declarations: [LandingComponent],
+      providers: [{
+        provide: AuthService,
+        useValue: {
+          isAuthenticated: () => false,
+          logout: () => {}
+        }
+      }],
+      schemas: [NO_ERRORS_SCHEMA]
     })
     .compileComponents();
     

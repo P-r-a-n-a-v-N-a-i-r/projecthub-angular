@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { SettingsComponent } from './settings.component';
+import { AuthService } from '../../core/services/auth.service';  // Adjust path as needed
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 
 describe('SettingsComponent', () => {
   let component: SettingsComponent;
@@ -8,7 +10,17 @@ describe('SettingsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [SettingsComponent]
+      imports: [HttpClientTestingModule],
+      declarations: [SettingsComponent],
+      providers: [{
+  provide: AuthService,
+  useValue: {
+    isAuthenticated: () => false,
+    logout: () => {},
+    me: () => ({ subscribe: () => {} })  // Add me method
+  }
+}],
+schemas: [NO_ERRORS_SCHEMA]
     })
     .compileComponents();
     
