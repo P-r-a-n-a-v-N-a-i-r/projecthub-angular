@@ -8,7 +8,7 @@ import { SettingsComponent } from './pages/settings/settings.component';
 import { AuthComponent } from './pages/auth/auth.component';
 import { TaskComponent } from './pages/task/task.component';
 import { ActivityComponent } from './pages/activity/activity.component'
-import { GuestGuard } from './core/guards/guest.guard';
+
 import { LandingComponent } from './pages/landing/landing.component';
 import { AuthGuard } from './core/guards/auth.guard';
 
