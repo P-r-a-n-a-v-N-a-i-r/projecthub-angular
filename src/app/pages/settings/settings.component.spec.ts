@@ -61,20 +61,23 @@ describe('SettingsComponent', () => {
 
     fixture = TestBed.createComponent(SettingsComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should initialize with user data on ngOnInit', () => {
-    expect(component.user).toEqual(mockUser);
-    expect(component.showResetPasswordForm).toBeTrue();
-    expect(component.userInitials).toBe('U1');
-    expect(component.profileForm.get('name')?.value).toBe(mockUser.name);
-    expect(component.profileForm.get('email')?.value).toBe(mockUser.email);
-  });
+  it('should initialize with user data on ngOnInit', async () => {
+  // Trigger ngOnInit and wait for async operations
+  fixture.detectChanges();
+  await fixture.whenStable(); // ✅ CRITICAL: Wait for BehaviorSubject + auth.me()
+
+  expect(component.user).toEqual(mockUser);
+  expect(component.showResetPasswordForm).toBe(true); // ✅ lowercase 'true'
+  expect(component.userInitials).toBe('U1'); // ✅ userInitials (not userInitial)
+  expect(component.profileForm?.get('name')?.value).toBe(mockUser.name);
+  expect(component.profileForm?.get('email')?.value).toBe(mockUser.email);
+});
 
   it('should get correct user initials', () => {
     expect(component.getUserInitials('John Doe')).toBe('JD');
